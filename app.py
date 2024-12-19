@@ -126,7 +126,7 @@ def handle_message(event):
             )
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=f"最大12個まで登録可能です。       現在の在庫:\n{inventory_list}")
+                TextSendMessage(text=f"最大12個まで登録可能です。現在の在庫:\n{inventory_list}")
             )
         else:
             line_bot_api.reply_message(
