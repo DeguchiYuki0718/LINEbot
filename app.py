@@ -174,6 +174,43 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text=f"削除中にエラーが発生しました: {e}")
             )
+
+
+    elif text == "リセット":
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(
+                    text="在庫をリセットしますか？",
+                    quick_reply=QuickReply(
+                        items=[
+                            QuickReplyButton(action=MessageAction(label="Yes", text="リセット:Yes")),
+                            QuickReplyButton(action=MessageAction(label="No", text="リセット:No")),
+                        ]
+                    )
+                )
+            )
+    elif text == "リセット:Yes":
+        try:
+            # ユーザーの在庫を全削除
+            Inventory.query.filter_by(user_id=user_id).delete()
+            db.session.commit()
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="すべての在庫をリセットしました。")
+            )
+        except Exception as e:
+            db.session.rollback()
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=f"リセット中にエラーが発生しました: {e}")
+            )
+    elif text == "リセット:No":
+        
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="リセットをキャンセルしました。")
+        )
+
     elif text == "期限間近の在庫":
             today = datetime.today().date()
             threshold_date = today + timedelta(days=2)
