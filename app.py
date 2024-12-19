@@ -118,15 +118,16 @@ def handle_message(event):
             TextSendMessage(text=f"レシピはこちらをご覧ください:\n{recipe_url}")
         )
     elif text == "在庫リスト":
-        # データベースから現在の在庫リストを取得
-        inventory_items = Inventory.query.filter_by(user_id=user_id).all()
+        # データベースから在庫リストを取得
+        inventory_items = (Inventory.query.filter_by(user_id=user_id).order_by(Inventory.expiration_date).all())
+        # inventory_items = Inventory.query.filter_by(user_id=user_id).all()
         if inventory_items:
             inventory_list = "\n".join(
                 [f" ○{item.name} (保存場所:{item.storage}, 期限:{item.expiration_date}, 在庫数:{item.quantity})" for item in inventory_items]
             )
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=f"最大12個まで登録可能です。現在の在庫:\n{inventory_list}")
+                TextSendMessage(text=f"最大12個まで登録可能です。現在の在庫(期限順):\n{inventory_list}")
             )
         else:
             line_bot_api.reply_message(
