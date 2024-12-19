@@ -175,7 +175,6 @@ def handle_message(event):
                 TextSendMessage(text=f"削除中にエラーが発生しました: {e}")
             )
 
-
     elif text == "リセット":
             line_bot_api.reply_message(
                 event.reply_token,
@@ -212,7 +211,7 @@ def handle_message(event):
         )
 
     elif text == "期限間近の在庫":
-            today = datetime.today().date()
+            today = datetime.now().date()
             threshold_date = today + timedelta(days=2)
             expiring_items = Inventory.query.filter(
                 Inventory.user_id == user_id,
@@ -323,7 +322,7 @@ def handle_message(event):
 
 def notify_two_days_before_expiration():
     with app.app_context():
-        today = datetime.today().date()
+        today = datetime.now().date()
         notification_date = today + timedelta(days=2)  
 
         users = Inventory.query.with_entities(Inventory.user_id).distinct().all()
